@@ -6,6 +6,7 @@ const Todo = require("./models/Todo");
 const User = require("./models/users.module");
 const bcrypt = require("bcrypt");
 const app = express();
+const uri = `mongodb+srv://sanjoy:${WPLQXokHiNMru6KW}@cluster0.kpr4m6j.mongodb.net/?retryWrites=true&w=majority`
 
 app.use(express.json());
 app.use(
@@ -25,7 +26,7 @@ app.use(
 );
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/mern-todo", {
+  .connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
