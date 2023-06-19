@@ -6,8 +6,11 @@ const Todo = require("./models/Todo");
 const User = require("./models/users.module");
 const bcrypt = require("bcrypt");
 const app = express();
-const uri = `mongodb+srv://sanjoy:${WPLQXokHiNMru6KW}@cluster0.kpr4m6j.mongodb.net/?retryWrites=true&w=majority`
+require("dotenv").config();
+require("./db/conn");
 
+const DB = process.env.DATABASE;
+const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(
   cors({
@@ -25,13 +28,13 @@ app.use(
   })
 );
 
-mongoose
-  .connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connected to Db"))
-  .catch(console.error);
+// mongoose
+//   .connect(DB, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then(() => console.log("Connected to DB"))
+//   .catch(console.error);
 
 app.get("/todos", async (req, res) => {
   // console.log(req.session);
@@ -122,4 +125,4 @@ app.post("/user/logout", async (req, res) => {
   res.send({ status: "success", message: "Logged out successfully" });
 });
 
-app.listen(8000, () => console.log("Server startedon port 8000"));
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
