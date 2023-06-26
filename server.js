@@ -39,7 +39,7 @@ app.use(
 app.get("/todos", async (req, res) => {
   // console.log(req.session);
   const todos = await Todo.find({
-    email: req.session.user.email,
+    email: req.session.user?.email,
   });
   // console.log(todos);
   if (todos.length > 0) return res.json(todos);
@@ -62,17 +62,29 @@ app.post("/todo/new", async (req, res) => {
 });
 
 app.delete("/todo/delete/:id", async (req, res) => {
-  const result = await Todo.findByIdAndDelete(req.params.id);
-  res.json(result);
+  try {
+    const result = await Todo.findByIdAndDelete(req.params.id);
+    res.json(result);
+  } catch (err) {
+    res.send({
+      error: err,
+    });
+  }
 });
 
 app.get("/todo/complete/:id", async (req, res) => {
-  const todo = await Todo.findById(req.params.id);
+  try {
+    const todo = await Todo.findById(req.params.id);
 
-  todo.complete = !todo.complete;
+    todo.complete = !todo.complete;
 
-  todo.save();
-  res.json(todo);
+    todo.save();
+    res.json(todo);
+  } catch (err) {
+    res.send({
+      error: err,
+    });
+  }
 });
 
 app.post("/user/register", async (req, res) => {
@@ -99,10 +111,7 @@ app.post("/user/login", async (req, res) => {
     return res.json({ status: "error", message: "Invalid Email" });
   }
 
-  const isPasswordCorrect = await bcrypt.compare(
-    req.body.password,
-    user.password
-  );
+  const isPasswordCorrect = bcrypt.compare(req.body.password, user.password);
   if (!isPasswordCorrect) {
     return res.json({ status: "error", message: "Invalid Password" });
   }
@@ -111,7 +120,7 @@ app.post("/user/login", async (req, res) => {
 });
 
 app.get("/user/verify", async (req, res) => {
-  if (!req.session.user) {
+  if (!req.session?.user) {
     return res.json({ status: "error", message: "Unauthenticated" });
   }
   res.json(req.session.user);
