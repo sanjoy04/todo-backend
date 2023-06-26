@@ -9,7 +9,6 @@ const app = express();
 require("dotenv").config();
 require("./db/conn");
 
-const DB = process.env.DATABASE;
 const PORT = process.env.PORT || 8000;
 app.use(express.json());
 app.use(
